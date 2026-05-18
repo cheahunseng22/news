@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Contact ChnCam - Get in touch with Cambodia's trusted news and culture platform. We welcome editorial submissions, advertising inquiries, and reader feedback.">
+<title>Contact Us - ChnCam Cambodia News & Culture</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Source+Serif+4:wght@300;400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{--gold:#C9A84C;--cream:#FDF8F0;--charcoal:#1A1814;--mid:#3D3830;--muted:#7A7268;--light-border:#E8E0D0;--white:#FFFFFF;--accent-red:#B5321A}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Source Serif 4',Georgia,serif;background:var(--cream);color:var(--charcoal);line-height:1.8}
+  a{text-decoration:none;color:inherit}
+  .top-bar{background:var(--charcoal);color:#aaa;font-family:'DM Sans',sans-serif;font-size:12px;padding:6px 0;text-align:center}
+  .top-bar a{color:var(--gold)}
+  header{background:var(--white);border-bottom:3px solid var(--gold);box-shadow:0 2px 20px rgba(0,0,0,.08)}
+  .header-inner{max-width:1200px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:72px}
+  .logo{font-family:'Playfair Display',serif;font-size:32px;font-weight:900;color:var(--charcoal);letter-spacing:-1px}
+  .logo span{color:var(--gold)}
+  .logo small{display:block;font-size:10px;font-family:'DM Sans',sans-serif;letter-spacing:3px;text-transform:uppercase;color:var(--muted);font-weight:400;margin-top:-6px}
+  nav a{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;text-transform:uppercase;letter-spacing:1px;padding:8px 14px;border-radius:4px;color:var(--mid);transition:all .2s;display:inline-block}
+  nav a:hover,nav a.active{background:var(--charcoal);color:var(--gold)}
+  .page-hero{background:var(--charcoal);padding:70px 24px;text-align:center}
+  .page-hero h1{font-family:'Playfair Display',serif;font-size:46px;font-weight:900;color:white;margin-bottom:12px}
+  .page-hero p{font-family:'DM Sans',sans-serif;font-size:15px;color:rgba(255,255,255,.6);max-width:500px;margin:0 auto}
+  .gold-line{width:60px;height:3px;background:var(--gold);margin:18px auto 0}
+  .contact-wrap{max-width:1100px;margin:0 auto;padding:70px 24px;display:grid;grid-template-columns:1fr 400px;gap:60px}
+  
+  /* FORM */
+  .form-section h2{font-family:'Playfair Display',serif;font-size:30px;font-weight:700;margin-bottom:10px}
+  .form-section p{font-family:'DM Sans',sans-serif;font-size:15px;color:var(--muted);margin-bottom:32px;line-height:1.6}
+  .form-group{margin-bottom:22px}
+  .form-group label{display:block;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;text-transform:uppercase;letter-spacing:1.5px;color:var(--mid);margin-bottom:8px}
+  .form-group input,.form-group select,.form-group textarea{
+    width:100%;padding:13px 16px;border:1px solid var(--light-border);background:white;
+    font-family:'DM Sans',sans-serif;font-size:15px;color:var(--charcoal);
+    border-radius:4px;outline:none;transition:border-color .2s;
+  }
+  .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--gold)}
+  .form-group textarea{resize:vertical;min-height:150px}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .submit-btn{
+    background:var(--charcoal);color:var(--gold);border:none;
+    padding:15px 36px;font-family:'DM Sans',sans-serif;font-size:13px;
+    font-weight:500;text-transform:uppercase;letter-spacing:1.5px;
+    border-radius:4px;cursor:pointer;transition:background .2s;
+  }
+  .submit-btn:hover{background:var(--mid)}
+  .success-msg{display:none;background:#d4edda;border:1px solid #c3e6cb;color:#155724;
+    padding:16px;border-radius:4px;margin-top:16px;font-family:'DM Sans',sans-serif;font-size:14px}
+
+  /* SIDEBAR INFO */
+  .contact-info{}
+  .info-card{background:white;border:1px solid var(--light-border);border-radius:8px;padding:28px;margin-bottom:20px}
+  .info-card h3{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid var(--gold)}
+  .info-item{display:flex;gap:14px;margin-bottom:16px;align-items:flex-start}
+  .info-icon{font-size:20px;flex-shrink:0;margin-top:2px}
+  .info-label{font-family:'DM Sans',sans-serif;font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:2px}
+  .info-value{font-family:'DM Sans',sans-serif;font-size:14px;color:var(--mid);line-height:1.5}
+  .info-value a{color:var(--gold)}
+
+  .dept-list{list-style:none}
+  .dept-list li{padding:10px 0;border-bottom:1px solid var(--light-border);display:flex;justify-content:space-between;align-items:center}
+  .dept-list li:last-child{border-bottom:none}
+  .dept-name{font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;color:var(--mid)}
+  .dept-email{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--gold)}
+
+  footer{background:var(--charcoal);color:rgba(255,255,255,.6);padding:40px 24px;text-align:center}
+  footer p{font-family:'DM Sans',sans-serif;font-size:13px;margin-bottom:14px}
+  .footer-links{display:flex;gap:24px;justify-content:center;flex-wrap:wrap}
+  .footer-links a{font-family:'DM Sans',sans-serif;font-size:12px;transition:color .2s}
+  .footer-links a:hover{color:var(--gold)}
+  @media(max-width:800px){.contact-wrap{grid-template-columns:1fr}.form-row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <span><a href="index.html">← Back to Home</a></span>
+  &nbsp;|&nbsp;
+  <span><a href="privacy.html">Privacy Policy</a></span>
+</div>
+<header>
+  <div class="header-inner">
+    <a href="index.html"><div class="logo">Chn<span>Cam</span><small>Cambodia News & Culture</small></div></a>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="contact.html" class="active">Contact</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+    </nav>
+  </div>
+</header>
+
+<div class="page-hero">
+  <h1>Contact Us</h1>
+  <p>We'd love to hear from you — whether you're a reader, contributor, or advertiser.</p>
+  <div class="gold-line"></div>
+</div>
+
+<div class="contact-wrap">
+
+  <!-- FORM -->
+  <div class="form-section">
+    <h2>Send Us a Message</h2>
+    <p>Use the form below to reach our editorial team, submit a news tip, request a correction, or ask about advertising opportunities. We aim to respond within 1–2 business days.</p>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>First Name *</label>
+        <input type="text" placeholder="Your first name">
+      </div>
+      <div class="form-group">
+        <label>Last Name *</label>
+        <input type="text" placeholder="Your last name">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Email Address *</label>
+      <input type="email" placeholder="your@email.com">
+    </div>
+    <div class="form-group">
+      <label>Subject / Department</label>
+      <select>
+        <option value="">— Select a topic —</option>
+        <option>General Inquiry</option>
+        <option>News Tip or Story Suggestion</option>
+        <option>Request a Correction</option>
+        <option>Advertising & Partnerships</option>
+        <option>Editorial Submission / Write for Us</option>
+        <option>Technical Issue / Website Bug</option>
+        <option>Privacy / Data Request</option>
+        <option>Other</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Your Message *</label>
+      <textarea placeholder="Please describe your inquiry in as much detail as possible. If submitting a news tip, include all relevant details, names, dates, and any supporting links or documentation..."></textarea>
+    </div>
+<button class="submit-btn" onclick="sendMessage()">Send Message</button>
+    <div id="success" class="success-msg">
+      ✅ Thank you for contacting us! Your message has been received and we will respond within 1–2 business days.
+    </div>
+  </div>
+
+  <!-- CONTACT INFO -->
+  <div class="contact-info">
+    <div class="info-card">
+      <h3>Get in Touch</h3>
+      <div class="info-item">
+        <div class="info-icon">📧</div>
+        <div>
+          <div class="info-label">General Email</div>
+          <div class="info-value"><a href="mailto:info@chncam.site">info@chncam.site</a></div>
+        </div>
+      </div>
+      <div class="info-item">
+        <div class="info-icon">📍</div>
+        <div>
+          <div class="info-label">Office Address</div>
+          <div class="info-value">#45 Norodom Boulevard<br>BKK1, Phnom Penh<br>Kingdom of Cambodia</div>
+        </div>
+      </div>
+      <div class="info-item">
+        <div class="info-icon">🕐</div>
+        <div>
+          <div class="info-label">Response Time</div>
+          <div class="info-value">Monday – Friday<br>9:00 AM – 6:00 PM (ICT, UTC+7)<br>We respond within 1–2 business days</div>
+        </div>
+      </div>
+      <div class="info-item">
+        <div class="info-icon">🌐</div>
+        <div>
+          <div class="info-label">Website</div>
+          <div class="info-value"><a href="https://news.chncam.site">news.chncam.site</a></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <h3>Departments</h3>
+      <ul class="dept-list">
+        <li>
+          <span class="dept-name">Editorial</span>
+          <span class="dept-email">editor@chncam.site</span>
+        </li>
+        <li>
+          <span class="dept-name">News Tips</span>
+          <span class="dept-email">tips@chncam.site</span>
+        </li>
+        <li>
+          <span class="dept-name">Advertising</span>
+          <span class="dept-email">ads@chncam.site</span>
+        </li>
+        <li>
+          <span class="dept-name">Corrections</span>
+          <span class="dept-email">corrections@chncam.site</span>
+        </li>
+        <li>
+          <span class="dept-name">Privacy</span>
+          <span class="dept-email">privacy@chncam.site</span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="info-card" style="background:var(--charcoal);border:none">
+      <h3 style="color:white;border-bottom-color:var(--gold)">Write for ChnCam</h3>
+      <p style="font-family:'DM Sans',sans-serif;font-size:14px;color:rgba(255,255,255,.6);line-height:1.6;margin-bottom:14px">We welcome contributions from experienced journalists, photographers, and writers with expertise in Cambodia and Southeast Asia.</p>
+      <p style="font-family:'DM Sans',sans-serif;font-size:14px;color:rgba(255,255,255,.6);line-height:1.6">Send your pitch and a brief bio to <span style="color:var(--gold)">editor@chncam.site</span> with the subject line "Contributor Inquiry."</p>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>© 2026 ChnCam · news.chncam.site · All rights reserved.</p>
+  <div class="footer-links">
+    <a href="index.html">Home</a>
+    <a href="about.html">About Us</a>
+    <a href="contact.html">Contact</a>
+    <a href="privacy.html">Privacy Policy</a>
+    <a href="terms.html">Terms of Use</a>
+  </div>
+</footer>
+</body>
+
+<script>
+  function sendMessage() {
+    // Get form values
+    const firstName = document.querySelector('.form-section input[placeholder="Your first name"]').value;
+    const lastName = document.querySelector('.form-section input[placeholder="Your last name"]').value;
+    const email = document.querySelector('.form-section input[placeholder="your@email.com"]').value;
+    const subject = document.querySelector('.form-section select').value;
+    const message = document.querySelector('.form-section textarea').value;
+    
+    // Validation
+    if (!firstName || !lastName || !email || !message) {
+      alert('❌ Please fill in all required fields (First Name, Last Name, Email, and Message).');
+      return;
+    }
+    
+    if (!email.includes('@') || !email.includes('.')) {
+      alert('❌ Please enter a valid email address.');
+      return;
+    }
+    
+    if (subject === "") {
+      alert('❌ Please select a subject/department.');
+      return;
+    }
+    
+    // Show success message
+    document.getElementById('success').style.display = 'block';
+    
+    // Clear form
+    document.querySelector('.form-section input[placeholder="Your first name"]').value = '';
+    document.querySelector('.form-section input[placeholder="Your last name"]').value = '';
+    document.querySelector('.form-section input[placeholder="your@email.com"]').value = '';
+    document.querySelector('.form-section select').selectedIndex = 0;
+    document.querySelector('.form-section textarea').value = '';
+    
+    // Scroll to success message
+    document.getElementById('success').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    
+    // Hide success message after 5 seconds
+    setTimeout(() => {
+      document.getElementById('success').style.display = 'none';
+    }, 5000);
+    
+    // Optional: Send to your email via Formspree or similar service
+    // Uncomment below if you want to actually send emails (requires Formspree account)
+    /*
+    fetch('https://formspree.io/f/your-form-id', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ firstName, lastName, email, subject, message })
+    }).then(response => {
+      if (response.ok) console.log('Message sent!');
+    }).catch(error => console.log('Error:', error));
+    */
+  }
+</script>
+
+</html>
