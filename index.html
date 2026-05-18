@@ -584,15 +584,16 @@
   
   // Navigation handlers
    // Navigation handlers - opens separate HTML files
+    // Navigation handlers - Stay on same page, smooth scroll to sections
   function setupNavigation() {
     const navLinks = {
-      navHome: () => { window.location.href = 'index.html'; },
-      navNews: () => { window.location.href = 'news.html'; },
-      navCulture: () => { window.location.href = 'culture.html'; },
-      navBusiness: () => { window.location.href = 'business.html'; },
-      navLifestyle: () => { window.location.href = 'lifestyle.html'; },
-      navAbout: () => { window.location.href = 'about.html'; },
-      navContact: () => { window.location.href = 'contact.html'; }
+      navHome: () => window.scrollTo({ top: 0, behavior: 'smooth' }),
+      navNews: () => scrollToSection('latestArticles'),
+      navCulture: () => scrollToSection('cultureArticles'),
+      navBusiness: () => scrollToSection('latestArticles'),
+      navLifestyle: () => scrollToSection('latestArticles'),
+      navAbout: () => showModal('About ChnCam', 'ChnCam is Cambodia\'s leading English-language digital media platform since 2020. We deliver accurate, timely news from across the Kingdom of Wonder.'),
+      navContact: () => showModal('Contact Us', '📧 Email: info@chncam.site\n📞 Phone: +855 1234 5678\n📍 Address: #45 Norodom Blvd, Phnom Penh, Cambodia')
     };
     
     for (const [id, action] of Object.entries(navLinks)) {
@@ -603,23 +604,23 @@
       });
     }
     
-    // Footer links - go to separate files
+    // Footer links - Show modals instead of separate files
     const footerActions = {
-      footerNews: () => { window.location.href = 'news.html'; },
-      footerCulture: () => { window.location.href = 'culture.html'; },
-      footerLifestyle: () => { window.location.href = 'lifestyle.html'; },
-      footerTech: () => { window.location.href = 'technology.html'; },
-      footerAbout: () => { window.location.href = 'about.html'; },
-      footerContact: () => { window.location.href = 'contact.html'; },
-      footerPrivacy: () => { window.location.href = 'privacy.html'; },
-      footerTerms: () => { window.location.href = 'terms.html'; },
-      bottomPrivacy: () => { window.location.href = 'privacy.html'; },
-      bottomTerms: () => { window.location.href = 'terms.html'; },
-      bottomAbout: () => { window.location.href = 'about.html'; },
-      bottomContact: () => { window.location.href = 'contact.html'; },
-      aboutLink: () => { window.location.href = 'about.html'; },
-      contactLink: () => { window.location.href = 'contact.html'; },
-      privacyLink: () => { window.location.href = 'privacy.html'; }
+      footerNews: () => scrollToSection('latestArticles'),
+      footerCulture: () => scrollToSection('cultureArticles'),
+      footerLifestyle: () => scrollToSection('latestArticles'),
+      footerTech: () => scrollToSection('latestArticles'),
+      footerAbout: () => showModal('About ChnCam', 'Your trusted source for Cambodia news, culture, and lifestyle since 2020.'),
+      footerContact: () => showModal('Contact Us', '📧 info@chncam.site\n📞 +855 1234 5678\n📍 Phnom Penh, Cambodia'),
+      footerPrivacy: () => showModal('Privacy Policy', 'We respect your privacy. Your email is never shared with third parties.'),
+      footerTerms: () => showModal('Terms of Use', '© 2026 ChnCam. All rights reserved.'),
+      bottomPrivacy: () => showModal('Privacy Policy', 'Your data is safe with us. Read our full privacy policy.'),
+      bottomTerms: () => showModal('Terms of Use', 'Terms and conditions apply.'),
+      bottomAbout: () => showModal('About ChnCam', 'Cambodia news since 2020.'),
+      bottomContact: () => showModal('Contact Us', 'Email: info@chncam.site'),
+      aboutLink: () => showModal('About ChnCam', 'Quality journalism from the Kingdom of Wonder.'),
+      contactLink: () => showModal('Contact Us', '📧 info@chncam.site'),
+      privacyLink: () => showModal('Privacy Policy', 'We value your privacy.')
     };
     
     for (const [id, action] of Object.entries(footerActions)) {
@@ -633,18 +634,41 @@
     // View All buttons
     document.getElementById('viewAllNews')?.addEventListener('click', (e) => {
       e.preventDefault();
-      window.location.href = 'news.html';
+      scrollToSection('latestArticles');
     });
     document.getElementById('viewAllCulture')?.addEventListener('click', (e) => {
       e.preventDefault();
-      window.location.href = 'culture.html';
+      scrollToSection('cultureArticles');
     });
     
     // Logo click - go home
     document.getElementById('logoHome')?.addEventListener('click', () => {
-      window.location.href = 'index.html';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   }
+  
+  // Modal function for popups
+  function showModal(title, message) {
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.8); display: flex; align-items: center;
+      justify-content: center; z-index: 1000; font-family: 'DM Sans', sans-serif;
+    `;
+    modal.innerHTML = `
+      <div style="background: white; max-width: 450px; width: 90%; border-radius: 8px; overflow: hidden;">
+        <div style="background: var(--gold); padding: 15px 20px; color: var(--charcoal); font-weight: bold; font-size: 18px;">${title}</div>
+        <div style="padding: 25px 20px; line-height: 1.6; white-space: pre-line;">${message}</div>
+        <div style="padding: 15px 20px; border-top: 1px solid #eee; text-align: right;">
+          <button id="closeModal" style="background: var(--charcoal); color: var(--gold); border: none; padding: 8px 20px; border-radius: 4px; cursor: pointer;">Close</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+    document.getElementById('closeModal').onclick = () => modal.remove();
+    modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
+  }
+  
   // Back to top button
   const backBtn = document.getElementById('backToTop');
   window.addEventListener('scroll', () => {
