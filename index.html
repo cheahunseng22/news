@@ -655,55 +655,37 @@
   });
   backBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
   
-  // Main fetch function
-async function fetchAllNews() {
+ async function fetchAllNews() {
   try {
-    // Show loading state
-    document.getElementById('latestArticles').innerHTML = '<div class="loading">📰 Fetching latest Cambodia news...</div>';
+    console.log('Fetching Cambodia news...');
     
-    const API_KEY = 'c0be9e17e4d36e8ddbbf61f1c2a56731';
-    const apiUrl = `https://gnews.io/api/v4/search?q=cambodia&lang=en&max=30&token=${API_KEY}`;
-    
-    // Try multiple proxy options (first that works)
-    const proxies = [
-      `https://api.allorigins.win/raw?url=${encodeURIComponent(apiUrl)}`,
-      `https://cors-anywhere.herokuapp.com/${apiUrl}`,
-      `https://cors.bridged.cc/${apiUrl}`,
-      `https://proxy.cors.sh/${apiUrl}`
+    // Use RSS2JSON to fetch from RSS feeds (no CORS issues)
+    const rssFeeds = [
+      'https://www.khmertimeskh.com/feed/',
+      'https://phnompenhpost.com/rss.xml',
+      'https://cambodianess.com/rss'
     ];
     
-    let data = null;
-    let workingProxy = null;
+    // Try multiple RSS feeds
+    let articles = [];
     
-    // Try each proxy
-    for (const proxy of proxies) {
+    for (const feed of rssFeeds) {
       try {
-        console.log('Trying proxy:', proxy);
-        const response = await fetch(proxy, { 
-          headers: { 'Content-Type': 'application/json' }
-        });
+        const response = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feed)}`);
+        const data = await response.json();
         
-        if (response.ok) {
-          data = await response.json();
-          workingProxy = proxy;
-          console.log('✅ Working proxy found!');
+        if (data.status === 'ok' && data.items && data.items.length > 0) {
+          articles = data.items.slice(0, 15);
+          console.log(`✅ Got ${articles.length} articles from RSS feed`);
           break;
         }
       } catch (err) {
-        console.log('Proxy failed, trying next...');
+        console.log('RSS feed failed, trying next...');
       }
     }
     
-    // If no proxy worked, use fallback static data
-    if (!data || !data.articles || data.articles.length === 0) {
-      console.log('No API data, using fallback');
-      useFallbackData();
-      return;
-    }
-    
-    const articles = data.articles;
-    
-    if (!articles || articles.length === 0) {
+    // If no RSS data, use fallback
+    if (articles.length === 0) {
       useFallbackData();
       return;
     }
@@ -711,95 +693,96 @@ async function fetchAllNews() {
     // Hero Section
     const heroArticle = articles[0];
     document.getElementById('heroTitle').innerText = heroArticle.title || 'Cambodia News';
-    document.getElementById('heroDesc').innerText = (heroArticle.description || 'Click to read full story on ChnCam').substring(0, 150);
+    document.getElementById('heroDesc').innerText = (heroArticle.description || 'Click to read full story').replace(/<[^>]*>/g, '').substring(0, 150);
     document.getElementById('heroCat').innerText = 'BREAKING NEWS';
     document.getElementById('heroBadge').innerText = 'LATEST';
-    document.getElementById('heroMain').onclick = () => window.open(heroArticle.url, '_blank');
+    document.getElementById('heroMain').onclick = () => window.open(heroArticle.link, '_blank');
     
     const heroImg = document.getElementById('heroImage');
-    if (heroArticle.image) {
-      heroImg.src = heroArticle.image;
+    if (heroArticle.thumbnail) {
+      heroImg.src = heroArticle.thumbnail;
     } else {
-      heroImg.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='480' viewBox='0 0 800 480'%3E%3Crect width='800' height='480' fill='%23C9A84C'/%3E%3Ctext x='400' y='240' font-size='28' fill='white' text-anchor='middle'%3ECambodia News%3C/text%3E%3C/svg%3E";
+      heroImg.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='480' viewBox='0 0 800 480'%3E%3Crect width='800' height='480' fill='%23C9A84C'/%3E%3Ctext x='400' y='240' font-size='28' fill='white' text-anchor='middle'%3EChnCam News%3C/text%3E%3C/svg%3E";
     }
     
-    // Latest News
+    // Latest News Grid
     const latestContainer = document.getElementById('latestArticles');
     latestContainer.innerHTML = articles.slice(1, 5).map(art => `
-      <div class="article-card" onclick="window.open('${art.url}', '_blank')">
-        <div class="article-thumb"><img src="${art.image || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22200%22%3E%3Crect width=%22300%22 height=%22200%22 fill=%22%23C9A84C%22/%3E%3Ctext x=%22150%22 y=%22100%22 fill=%22white%22 text-anchor=%22middle%22%3ENews%3C/text%3E%3C/svg%3E'}" alt="${art.title}"></div>
-        <div class="cat">${art.source?.name || 'Cambodia News'}</div>
+      <div class="article-card" onclick="window.open('${art.link}', '_blank')">
+        <div class="article-thumb"><img src="${art.thumbnail || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22200%22%3E%3Crect width=%22300%22 height=%22200%22 fill=%22%23C9A84C%22/%3E%3Ctext x=%22150%22 y=%22100%22 fill=%22white%22 text-anchor=%22middle%22%3ENews%3C/text%3E%3C/svg%3E'}" alt="${art.title}"></div>
+        <div class="cat">${art.author || 'Cambodia News'}</div>
         <h3>${(art.title || 'News').substring(0, 80)}</h3>
-        <p>${(art.description || 'Click to read full article').substring(0, 120)}...</p>
-        <div class="meta">${new Date(art.publishedAt).toDateString()} · ${Math.floor(Math.random() * 8) + 3} min read</div>
+        <p>${(art.description || 'Click to read full article').replace(/<[^>]*>/g, '').substring(0, 120)}...</p>
+        <div class="meta">${new Date(art.pubDate).toDateString()} · ${Math.floor(Math.random() * 8) + 3} min read</div>
       </div>
     `).join('');
     
     // Sidebar
     const sidebarContainer = document.getElementById('heroSidebar');
-    sidebarContainer.innerHTML = articles.slice(5, 9).map(art => `
-      <div class="side-card" onclick="window.open('${art.url}', '_blank')">
-        <div class="side-thumb"><img src="${art.image || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2290%22 height=%2270%22%3E%3Crect width=%2290%22 height=%2270%22 fill=%22%23C9A84C%22/%3E%3C/svg%3E'}" alt="${art.title}"></div>
+    sidebarContainer.innerHTML = articles.slice(4, 8).map(art => `
+      <div class="side-card" onclick="window.open('${art.link}', '_blank')">
+        <div class="side-thumb"><img src="${art.thumbnail || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2290%22 height=%2270%22%3E%3Crect width=%2290%22 height=%2270%22 fill=%22%23C9A84C%22/%3E%3C/svg%3E'}" alt="${art.title}"></div>
         <div class="side-card-body">
           <div class="cat">Trending</div>
           <h3>${(art.title || 'News').substring(0, 60)}</h3>
-          <div class="meta">${new Date(art.publishedAt).toDateString()}</div>
+          <div class="meta">${new Date(art.pubDate).toDateString()}</div>
         </div>
       </div>
     `).join('');
     
-    // Culture
+    // Culture Section
     const cultureContainer = document.getElementById('cultureArticles');
     const cultureArticles = articles.filter(art => 
       (art.title || '').toLowerCase().includes('culture') || 
-      (art.title || '').toLowerCase().includes('heritage')
+      (art.title || '').toLowerCase().includes('heritage') ||
+      (art.title || '').toLowerCase().includes('tradition')
     );
-    const cultureItems = cultureArticles.length >= 2 ? cultureArticles.slice(0, 2) : articles.slice(9, 11);
+    const cultureItems = cultureArticles.length >= 2 ? cultureArticles.slice(0, 2) : articles.slice(7, 9);
     cultureContainer.innerHTML = cultureItems.map(art => `
-      <div class="article-card" onclick="window.open('${art.url}', '_blank')">
-        <div class="article-thumb"><img src="${art.image || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22200%22%3E%3Crect width=%22300%22 height=%22200%22 fill=%22%23C9A84C%22/%3E%3C/svg%3E'}" alt="${art.title}"></div>
+      <div class="article-card" onclick="window.open('${art.link}', '_blank')">
+        <div class="article-thumb"><img src="${art.thumbnail || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22200%22%3E%3Crect width=%22300%22 height=%22200%22 fill=%22%23C9A84C%22/%3E%3C/svg%3E'}" alt="${art.title}"></div>
         <div class="cat">Culture</div>
         <h3>${(art.title || 'Cultural News').substring(0, 80)}</h3>
-        <p>${(art.description || 'Explore Cambodian heritage').substring(0, 110)}...</p>
-        <div class="meta">${new Date(art.publishedAt).toDateString()} · ${Math.floor(Math.random() * 8) + 3} min read</div>
+        <p>${(art.description || 'Explore Cambodian heritage').replace(/<[^>]*>/g, '').substring(0, 110)}...</p>
+        <div class="meta">${new Date(art.pubDate).toDateString()} · ${Math.floor(Math.random() * 8) + 3} min read</div>
       </div>
     `).join('');
     
     // Popular List
     const popularContainer = document.getElementById('popularList');
-    popularContainer.innerHTML = articles.slice(2, 7).map((art, idx) => `
-      <li onclick="window.open('${art.url}', '_blank')">
+    popularContainer.innerHTML = articles.slice(0, 5).map((art, idx) => `
+      <li onclick="window.open('${art.link}', '_blank')">
         <div class="pop-num">0${idx+1}</div>
         <div>
           <div class="pop-title">${(art.title || 'News').substring(0, 50)}</div>
-          <div class="pop-meta">${art.source?.name || 'News'} · ${Math.floor(Math.random() * 20) + 1}K views</div>
+          <div class="pop-meta">${art.author || 'News'} · ${Math.floor(Math.random() * 20) + 1}K views</div>
         </div>
       </li>
     `).join('');
     
-    console.log('✅ News loaded successfully!');
+    console.log('✅ News loaded from RSS feeds!');
     
   } catch (error) {
-    console.error('❌ API Error:', error);
+    console.error('❌ Error:', error);
     useFallbackData();
   }
 }
 
-// Fallback static data when API fails
+// Fallback static data
 function useFallbackData() {
   console.log('Using fallback data');
   
   const fallbackArticles = [
-    { title: "Cambodia's Economy Shows Strong Growth in 2026", description: "The Kingdom continues to attract foreign investment with new special economic zones...", source: "ChnCam News", image: null, url: "#", date: new Date() },
-    { title: "Angkor Wat Welcomes 2 Million Visitors This Year", description: "Tourism rebounds as Cambodia's premier destination sees record numbers...", source: "ChnCam Travel", image: null, url: "#", date: new Date() },
-    { title: "Khmer New Year Celebrations Draw Crowds Nationwide", description: "Traditional ceremonies and festivities mark the joyous occasion across Cambodia...", source: "ChnCam Culture", image: null, url: "#", date: new Date() },
-    { title: "Phnom Penh Launches New Public Transport System", description: "Modern buses and eco-friendly options aim to reduce traffic congestion...", source: "ChnCam News", image: null, url: "#", date: new Date() }
+    { title: "Cambodia's Economy Shows Strong Growth in 2026", description: "The Kingdom continues to attract foreign investment with new special economic zones boosting trade and manufacturing sectors across the country.", source: "ChnCam News", link: "#", date: new Date() },
+    { title: "Angkor Wat Welcomes 2 Million Visitors This Year", description: "Tourism rebounds as Cambodia's premier UNESCO World Heritage site sees record numbers of international visitors in the first quarter.", source: "ChnCam Travel", link: "#", date: new Date() },
+    { title: "Khmer New Year Celebrations Draw Crowds Nationwide", description: "Traditional ceremonies, water blessings, and festive gatherings mark the joyous occasion across all provinces of Cambodia.", source: "ChnCam Culture", link: "#", date: new Date() },
+    { title: "Phnom Penh Launches New Public Transport System", description: "Modern electric buses and eco-friendly transport options aim to reduce traffic congestion and carbon emissions in the capital.", source: "ChnCam News", link: "#", date: new Date() }
   ];
   
   const latestContainer = document.getElementById('latestArticles');
   latestContainer.innerHTML = fallbackArticles.map(art => `
     <div class="article-card">
-      <div class="article-thumb" style="background:linear-gradient(135deg,#1A4A6B,#2E8B8B); display:flex; align-items:center; justify-content:center; color:white;">📰</div>
+      <div class="article-thumb" style="background:linear-gradient(135deg,#1A4A6B,#2E8B8B); display:flex; align-items:center; justify-content:center; color:white; font-size:24px;">📰</div>
       <div class="cat">${art.source}</div>
       <h3>${art.title}</h3>
       <p>${art.description}</p>
@@ -809,11 +792,12 @@ function useFallbackData() {
   
   document.getElementById('heroTitle').innerText = "ChnCam - Your Trusted Cambodia News Source";
   document.getElementById('heroDesc').innerText = "Get the latest news, culture, and travel insights from the Kingdom of Wonder.";
-  document.getElementById('heroSidebar').innerHTML = `
-    <div class="side-card"><div class="side-card-body"><div class="cat">Welcome</div><h3>Thank you for visiting ChnCam</h3><div class="meta">Your trusted news source</div></div></div>
-  `;
+  document.getElementById('heroCat').innerText = "WELCOME";
+  document.getElementById('heroBadge').innerText = "ChnCam";
 }
-  // Newsletter
+
+
+// Newsletter
   const subBtn = document.getElementById('subscribeBtn');
   subBtn?.addEventListener('click', () => {
     const emailInput = document.getElementById('newsEmail');
